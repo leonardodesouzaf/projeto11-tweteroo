@@ -27,22 +27,22 @@ app.post('/tweets', function (req,res) {
 });
 
 app.get('/tweets', function (req,res) {
-    const latestTweets = [];
-    for(let i=tweets.length; i>(tweets.length-11); i--){
-        let userAvatar = '';
-        for(let j=0; j<users.length; j++){
-            if(users[j].username === tweets[i].username){
-                userAvatar = users[j].avatar;
+    const latestTweets = tweets.map(tweet => {
+        let userAvatar;
+        users.forEach(user => {
+            if(user.username === tweet.username){
+                userAvatar = user.avatar;
             }
-        }
-        let newObject = {
-            username: tweets[i].username,
+        })
+        return {
+            username: tweet.username,
             avatar: userAvatar,
-            tweet: tweets[i].tweet
+            tweet: tweet.tweet
         }
-        latestTweets.push(newObject);
-    }
-    res.send(latestTweets);
+    });
+    let sliceRes=latestTweets.slice(-10);
+    let response = sliceRes.reverse();
+    res.send(response);
 });
 
 app.listen(5000);
